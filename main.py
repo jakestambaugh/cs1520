@@ -1,11 +1,12 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from random import randint
-from storage import create_datastore_client, list_slides
 
+from storage import create_datastore_client, list_slides
+from quiz import Quiz
 
 app = Flask(__name__)
 
-# Initialization code
+# Initialization code for our storage layer
 datastore_client = create_datastore_client()
 
 
@@ -36,19 +37,9 @@ def syllabus():
 def handle_lecture():
     """Generate a page with a list of lectures
 
-    In this iteration, the data is read from a hardcoded list in Python.
+    In this iteration, the data is read from Datastore. It generates links our to Object Storage.
     """
     lectures = list_slides(datastore_client)
-    """
-    lectures = [
-        {"date": "Jan 9, 2020", "title": "HTTP and the Internet", "url": "https://docs.google.com/presentation/d/1Z1TwlIKHDGxMHPhRX1IH0wz6MbfbKGcMvrhAYS2MQLM/edit?usp=sharing"}, 
-        {"date": "Jan 9, 2020", "title": "Handling Requests", "url": "https://docs.google.com/presentation/d/1Z1TwlIKHDGxMHPhRX1IH0wz6MbfbKGcMvrhAYS2MQLM/edit?usp=sharing"}, 
-        {"date": "Jan 16, 2020", "title": "Intro to Python", "url": "https://docs.google.com/presentation/d/1yrfJdNNvAwKVsGGPGgyGHd-uWT0j3iZNw_PovI8rDIE/edit?usp=sharing"},
-        # Each dictionary in this list has three keys, "date", "title", and "url"
-        # Because we need all of these keys to render the page, and we will always have them, this could also be a good time to use a define a Python class for "Lecture".
-        {"date": "Jan 16, 2020", "title": "Intro to Javascript", "url": "https://docs.google.com/presentation/d/1HUjfcA_fhwb8K5nUSxZGXrtBgGAo2pxkdK68PYz_FqQ/edit?usp=sharing"}]
-    """
-
     return render_template('lectures.html', lectures=lectures)
 
 
@@ -59,6 +50,23 @@ def handle_about():
     Includes a link to this website's GitHub page.
     """
     return render_template('about.html')
+
+
+@app.route('/quiz/<id>', methods=["GET"])
+def show_quiz(id):
+    """Presents a quiz to a user
+
+    """
+    quiz = Quiz("QUIZ TITLE", id, [{"description": "What markup language is describes the structure of web pages?"}, {
+                "description": "What language is used to style web pages?"}])
+    return render_template('quiz.html', quiz=quiz)
+
+
+@app.route('/quiz/<id>', methods=["POST"])
+def process_quiz_answer(id):
+    student_id = request.form.get("student-id", "No ID provided")
+    student_name = request.form.get("student-name", "No name provided")
+    return "Processed results! {} {}".format(student_id, student_name)
 
 
 if __name__ == '__main__':
