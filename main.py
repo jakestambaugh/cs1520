@@ -69,6 +69,9 @@ def show_quiz(id):
             {
                 "description": "What file can be used to serve static resources in App Engine?"
             },
+            {
+                "description": "What file did the Cow Clicker project store all of the style markup in?"
+            },
             {"description": "What assignment is due next week?"},
             {"description": "What is the username of your first group member?"},
             {"description": "What is the username of your second group member?"},
