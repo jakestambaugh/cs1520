@@ -72,6 +72,9 @@ def show_quiz(id):
             {
                 "description": "What file did the Cow Clicker project store all of the style markup in?"
             },
+            {
+                "description": "What property can we set on HTML elements to run our own JavaScript when clicked?"
+            },
             {"description": "What assignment is due next week?"},
             {"description": "What is the username of your first group member?"},
             {"description": "What is the username of your second group member?"},
